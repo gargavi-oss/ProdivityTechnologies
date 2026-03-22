@@ -16,11 +16,12 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Middleware
-// CORS — allow Vercel deploys and localhost
+// CORS — allow Vercel deploys, prodivity.in, and localhost
 app.use(cors({
   origin: (origin, callback) => {
     const allowed = [
       /\.vercel\.app$/,
+      /prodivity\.in$/,      // prodivity.in + admin.prodivity.in
       /localhost/,
     ];
     if (!origin || allowed.some((p) => p.test(origin))) {
