@@ -1,15 +1,21 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // Gmail App Password (not your regular password)
-  },
-});
+// Transporter is created lazily inside sendLeadNotification()
+// This fixes the ESM hoisting issue where static imports run BEFORE
+// dotenv.config() in index.js, leaving EMAIL_USER undefined at module load time.
+
 
 export const sendLeadNotification = async (contact) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return; // Skip if not configured
+
+  // Create transporter here (not at module level) so dotenv has already run
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
 
   const categoryLabel = contact.category || 'Not specified';
   const projectBaseLabel = contact.projectBase || 'Not specified';
