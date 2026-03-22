@@ -18,15 +18,15 @@ import AdminTeam from './pages/admin/AdminTeam';
 import AdminSettings from './pages/admin/AdminSettings';
 
 // Admin mode detection:
-// 1. VITE_ADMIN_MODE=true env var (set in Vercel for the admin deployment)
-// 2. Hostname starts with admin. or admin- (for custom domain users)
+// 1. VITE_ADMIN_MODE=true env var (for dedicated admin deployment)
+// 2. Hostname starts with admin. (for subdomain access)
 const isAdminDomain = () => {
   if (import.meta.env.VITE_ADMIN_MODE === 'true') return true;
   const host = window.location.hostname;
   return host.startsWith('admin.') || host.startsWith('admin-');
 };
 
-// Main public website
+// Main public website layout
 const HomePage = () => (
   <>
     <Navbar />
@@ -42,13 +42,14 @@ const HomePage = () => (
 );
 
 function App() {
-  const adminDomain = isAdminDomain();
+  const adminMode = isAdminDomain();
 
   return (
     <BrowserRouter>
       <Routes>
-        {adminDomain ? (
-          // ── Admin subdomain only (admin.prodivity.in) ──
+        {adminMode ? (
+          // ── DEDICATED ADMIN DEPLOYMENT (e.g. admin.prodivity.in) ──
+          // Admin panel is served at the root (/)
           <>
             <Route path="/" element={<AdminLogin />} />
             <Route path="/dashboard" element={<AdminDashboard />} />
@@ -60,9 +61,21 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         ) : (
-          // ── Public website only — no admin routes ──
+          // ── PUBLIC WEBSITE DEPLOYMENT (e.g. prodivity.in) ──
           <>
+            {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
+            
+            {/* Fallback Admin Routes (access via prodivity.in/admin) */}
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/contacts" element={<AdminContacts />} />
+            <Route path="/admin/projects" element={<AdminProjects />} />
+            <Route path="/admin/testimonials" element={<AdminTestimonials />} />
+            <Route path="/admin/team" element={<AdminTeam />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
+            
+            {/* Catch-all redirect to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         )}
