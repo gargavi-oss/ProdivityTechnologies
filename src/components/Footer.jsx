@@ -21,7 +21,7 @@ const serviceLinks = [
 const socials = [
   { icon: Github, href: '#', label: 'GitHub' },
   { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  { icon: Linkedin, href: 'https://www.linkedin.com/company/prodivitytechnologies/?viewAsMember=true', label: 'LinkedIn' },
   { icon: Instagram, href: '#', label: 'Instagram' },
 ];
 
@@ -59,8 +59,12 @@ const Footer = () => {
               textDecoration: 'none',
               marginBottom: 'var(--space-4)',
             }}>
-              <Zap size={20} style={{ color: 'var(--primary)' }} />
-              Prodivity
+               <img
+                src="logo.png"
+                alt="Prodivity Technologies"
+                style={{ height: '65px', width: 'auto', display: 'block' }}
+              />
+
             </a>
             <p style={{
               fontSize: '0.875rem',
