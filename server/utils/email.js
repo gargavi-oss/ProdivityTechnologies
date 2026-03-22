@@ -25,8 +25,11 @@ export const sendLeadNotification = async (contact) => {
     port: 465,
     secure: true,
     auth: { user, pass },
-    connectionTimeout: 10000, // Wait up to 10 seconds for connection
+    connectionTimeout: 10000, 
     socketTimeout: 10000,
+    // Force IPv4 because Render's free tier outgoing network drops IPv6 (ENETUNREACH)
+    family: 4,
+    tls: { rejectUnauthorized: false },
   });
 
   const categoryLabel = contact.category || 'Not specified';
