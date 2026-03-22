@@ -61,9 +61,9 @@ const Navbar = () => {
           color: 'var(--on-surface)',
           textDecoration: 'none',
         }}>
-          <Zap size={22} style={{ color: 'var(--primary)' }} />
+          <img src="logo.png" className='w-15' alt="" />
           <span>Prodivity Technologies
-            
+
           </span>
         </a>
 
