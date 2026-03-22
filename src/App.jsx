@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
@@ -9,6 +10,7 @@ import Team from './components/Team';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminContacts from './pages/admin/AdminContacts';
@@ -17,16 +19,17 @@ import AdminTestimonials from './pages/admin/AdminTestimonials';
 import AdminTeam from './pages/admin/AdminTeam';
 import AdminSettings from './pages/admin/AdminSettings';
 
-// Admin mode detection:
-// 1. VITE_ADMIN_MODE=true env var (for dedicated admin deployment)
-// 2. Hostname starts with admin. (for subdomain access)
+// Detect admin mode
 const isAdminDomain = () => {
-  if (import.meta.env.VITE_ADMIN_MODE === 'true') return true;
   const host = window.location.hostname;
-  return host.startsWith('admin.') || host.startsWith('admin-');
+
+  // ENV override (useful for testing)
+  if (import.meta.env.VITE_ADMIN_MODE === 'true') return true;
+
+  return host.startsWith('admin.');
 };
 
-// Main public website layout
+// Public website layout
 const HomePage = () => (
   <>
     <Navbar />
@@ -44,12 +47,19 @@ const HomePage = () => (
 function App() {
   const adminMode = isAdminDomain();
 
+  // OPTIONAL: redirect /admin → admin subdomain (for production only)
+  if (!adminMode && window.location.pathname.startsWith('/admin')) {
+    if (!window.location.hostname.includes('localhost')) {
+      window.location.href = `https://admin.${window.location.host}`;
+    }
+  }
+
   return (
     <BrowserRouter>
       <Routes>
+
         {adminMode ? (
-          // ── DEDICATED ADMIN DEPLOYMENT (e.g. admin.prodivity.in) ──
-          // Admin panel is served at the root (/)
+          // ───────── ADMIN SUBDOMAIN (admin.prodivity.in) ─────────
           <>
             <Route path="/" element={<AdminLogin />} />
             <Route path="/dashboard" element={<AdminDashboard />} />
@@ -58,15 +68,20 @@ function App() {
             <Route path="/testimonials" element={<AdminTestimonials />} />
             <Route path="/team" element={<AdminTeam />} />
             <Route path="/settings" element={<AdminSettings />} />
+
+            {/* If someone types /admin → redirect to root */}
+            <Route path="/admin/*" element={<Navigate to="/" replace />} />
+
+            {/* Catch-all */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         ) : (
-          // ── PUBLIC WEBSITE DEPLOYMENT (e.g. prodivity.in) ──
+          // ───────── MAIN WEBSITE (prodivity.in / localhost) ─────────
           <>
-            {/* Public Routes */}
+            {/* Public Website */}
             <Route path="/" element={<HomePage />} />
-            
-            {/* Fallback Admin Routes (access via prodivity.in/admin) */}
+
+            {/* Admin fallback via /admin */}
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/contacts" element={<AdminContacts />} />
@@ -74,11 +89,12 @@ function App() {
             <Route path="/admin/testimonials" element={<AdminTestimonials />} />
             <Route path="/admin/team" element={<AdminTeam />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
-            
-            {/* Catch-all redirect to home */}
+
+            {/* Catch-all */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         )}
+
       </Routes>
     </BrowserRouter>
   );
