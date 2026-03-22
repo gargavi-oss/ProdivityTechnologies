@@ -21,8 +21,12 @@ export const sendLeadNotification = async (contact) => {
   const to = process.env.EMAIL_TO?.trim() || user;
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: { user, pass },
+    connectionTimeout: 10000, // Wait up to 10 seconds for connection
+    socketTimeout: 10000,
   });
 
   const categoryLabel = contact.category || 'Not specified';
