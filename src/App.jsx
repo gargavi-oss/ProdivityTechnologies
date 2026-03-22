@@ -48,11 +48,11 @@ function App() {
   const adminMode = isAdminDomain();
 
   // OPTIONAL: redirect /admin → admin subdomain (for production only)
-  if (!adminMode && window.location.pathname.startsWith('/admin')) {
-    if (!window.location.hostname.includes('localhost')) {
-      window.location.href = `https://admin.${window.location.host}`;
-    }
-  }
+  // if (!adminMode && window.location.pathname.startsWith('/admin')) {
+  //   if (!window.location.hostname.includes('localhost')) {
+  //     window.location.href = `https://admin.${window.location.host}`;
+  //   }
+  // }
 
   return (
     <BrowserRouter>
