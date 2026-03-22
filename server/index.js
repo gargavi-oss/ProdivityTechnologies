@@ -15,11 +15,21 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Middleware
-app.use(cors(
-  {
-    origin: "*"
-  }
-));
+// CORS — allow Vercel deploys and localhost
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowed = [
+      /\.vercel\.app$/,
+      /localhost/,
+    ];
+    if (!origin || allowed.some((p) => p.test(origin))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 // Routes
