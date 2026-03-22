@@ -29,6 +29,7 @@ const AdminNav = ({ active }) => {
     { label: 'Dashboard', path: adminPath('/dashboard') },
     { label: 'Contacts', path: adminPath('/contacts') },
     { label: 'Projects', path: adminPath('/projects') },
+    { label: 'Testimonials', path: adminPath('/testimonials') },
   ];
 
   return (

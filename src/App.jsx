@@ -12,6 +12,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminContacts from './pages/admin/AdminContacts';
 import AdminProjects from './pages/admin/AdminProjects';
+import AdminTestimonials from './pages/admin/AdminTestimonials';
 
 // Admin mode detection:
 // 1. VITE_ADMIN_MODE=true env var (set in Vercel for the admin deployment)
@@ -49,6 +50,7 @@ function App() {
             <Route path="/dashboard" element={<AdminDashboard />} />
             <Route path="/contacts" element={<AdminContacts />} />
             <Route path="/projects" element={<AdminProjects />} />
+            <Route path="/testimonials" element={<AdminTestimonials />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         ) : (

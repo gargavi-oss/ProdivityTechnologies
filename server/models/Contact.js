@@ -12,6 +12,25 @@ const contactSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
+  category: {
+    type: String,
+    enum: [
+      'Web Application',
+      'Mobile App',
+      'E-Commerce',
+      'AI / Machine Learning',
+      'Cloud & DevOps',
+      'UI/UX Design',
+      'API Development',
+      'Other',
+    ],
+    default: 'Other',
+  },
+  projectBase: {
+    type: String,
+    trim: true,
+    default: '',
+  },
   message: {
     type: String,
     required: [true, 'Message is required'],
