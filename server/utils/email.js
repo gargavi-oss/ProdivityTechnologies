@@ -27,8 +27,9 @@ export const sendLeadNotification = async (contact) => {
     auth: { user, pass },
     connectionTimeout: 10000, 
     socketTimeout: 10000,
-    // Force Node.js to use an IPv4 socket strictly (bypasses Render IPv6 block)
-    localAddress: '0.0.0.0',
+    // Note: Render's free tier blocks outgoing SMTP connections (Ports 465/587)
+    // which results in ENETUNREACH timeouts. 
+    family: 4,
     tls: { rejectUnauthorized: false },
   });
 
