@@ -6,15 +6,23 @@ import nodemailer from 'nodemailer';
 
 
 export const sendLeadNotification = async (contact) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return; // Skip if not configured
+  console.log('Sending email...');
+  console.log('EMAIL_USER exists?', !!process.env.EMAIL_USER);
+  console.log('EMAIL_PASS exists?', !!process.env.EMAIL_PASS);
+
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log('⚠️ Skipping email: EMAIL_USER or EMAIL_PASS is missing in environment.');
+    return; // Skip if not configured
+  }
 
   // Create transporter here (not at module level) so dotenv has already run
+  const user = process.env.EMAIL_USER?.trim();
+  const pass = process.env.EMAIL_PASS?.trim();
+  const to = process.env.EMAIL_TO?.trim() || user;
+
   const transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
+    auth: { user, pass },
   });
 
   const categoryLabel = contact.category || 'Not specified';
@@ -61,10 +69,15 @@ export const sendLeadNotification = async (contact) => {
     </div>
   `;
 
-  await transporter.sendMail({
-    from: `"Prodivity Technologies" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_TO || process.env.EMAIL_USER,
-    subject: `🚀 New Lead: ${contact.name} — ${categoryLabel}`,
-    html,
-  });
+  try {
+    await transporter.sendMail({
+      from: `"Prodivity Technologies" <${user}>`,
+      to,
+      subject: `🚀 New Lead: ${contact.name} — ${categoryLabel}`,
+      html,
+    });
+    console.log('✅ Email sent successfully!');
+  } catch (err) {
+    console.error('❌ Nodemailer Error:', err.message);
+  }
 };
