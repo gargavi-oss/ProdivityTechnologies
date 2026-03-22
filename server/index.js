@@ -8,6 +8,9 @@ import contactRoutes from './routes/contacts.js';
 import projectRoutes from './routes/projects.js';
 import dashboardRoutes from './routes/dashboard.js';
 import testimonialRoutes from './routes/testimonials.js';
+import teamRoutes from './routes/team.js';
+import settingsRoutes from './routes/settings.js';
+import uploadRoutes from './routes/upload.js';
 import Admin from './models/Admin.js';
 
 dotenv.config();
@@ -21,7 +24,7 @@ app.use(cors({
   origin: (origin, callback) => {
     const allowed = [
       /\.vercel\.app$/,
-      /prodivity\.in$/,      // prodivity.in + admin.prodivity.in
+      /prodivity\.in$/,
       /localhost/,
     ];
     if (!origin || allowed.some((p) => p.test(origin))) {
@@ -31,6 +34,8 @@ app.use(cors({
     }
   },
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 }));
 app.use(express.json());
 
@@ -40,6 +45,9 @@ app.use('/api/contacts', contactRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/team', teamRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

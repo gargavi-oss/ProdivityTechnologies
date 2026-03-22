@@ -5,6 +5,7 @@ import Hero from './components/Hero';
 import Services from './components/Services';
 import About from './components/About';
 import Portfolio from './components/Portfolio';
+import Team from './components/Team';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -13,6 +14,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminContacts from './pages/admin/AdminContacts';
 import AdminProjects from './pages/admin/AdminProjects';
 import AdminTestimonials from './pages/admin/AdminTestimonials';
+import AdminTeam from './pages/admin/AdminTeam';
+import AdminSettings from './pages/admin/AdminSettings';
 
 // Admin mode detection:
 // 1. VITE_ADMIN_MODE=true env var (set in Vercel for the admin deployment)
@@ -31,6 +34,7 @@ const HomePage = () => (
     <Services />
     <About />
     <Portfolio />
+    <Team />
     <Testimonials />
     <Contact />
     <Footer />
@@ -44,13 +48,15 @@ function App() {
     <BrowserRouter>
       <Routes>
         {adminDomain ? (
-          // ── Admin subdomain only (admin.yourdomain.com) ──
+          // ── Admin subdomain only (admin.prodivity.in) ──
           <>
             <Route path="/" element={<AdminLogin />} />
             <Route path="/dashboard" element={<AdminDashboard />} />
             <Route path="/contacts" element={<AdminContacts />} />
             <Route path="/projects" element={<AdminProjects />} />
             <Route path="/testimonials" element={<AdminTestimonials />} />
+            <Route path="/team" element={<AdminTeam />} />
+            <Route path="/settings" element={<AdminSettings />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         ) : (

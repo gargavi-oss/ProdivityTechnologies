@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Play } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
+import API_BASE from '../config';
 
-const stats = [
+const DEFAULT_STATS = [
   { value: '4+', label: 'Projects Delivered' },
   { value: '3+', label: 'Happy Clients' },
   { value: '98%', label: 'Client Satisfaction' },
@@ -43,6 +44,28 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const Hero = () => {
+  const [stats, setStats] = useState(DEFAULT_STATS);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/settings`)
+      .then((r) => r.json())
+      .then((data) => {
+        const s = data.settings || [];
+        if (s.length > 0) {
+          setStats(DEFAULT_STATS.map((def) => {
+            const key = 'stat_' + def.label.toLowerCase().replace(/[^a-z]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+            const found = s.find((x) =>
+              x.label === def.label ||
+              x.key === key ||
+              x.key.includes(def.label.toLowerCase().split(' ')[0])
+            );
+            return found ? { ...def, value: found.value } : def;
+          }));
+        }
+      })
+      .catch(() => {}); // silently keep defaults on error
+  }, []);
+
   return (
     <section
       id="home"

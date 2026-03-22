@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Edit, X } from 'lucide-react';
+import { Plus, Trash2, Edit, X, Upload } from 'lucide-react';
 import API_BASE from '../../config';
 import AdminNav, { adminPath } from './AdminNav';
 
@@ -13,6 +13,7 @@ const AdminProjects = () => {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyProject);
+  const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem('admin_token');
 
@@ -59,6 +60,28 @@ const AdminProjects = () => {
     setShowForm(true);
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch(`${API_BASE}/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (res.ok) setForm((f) => ({ ...f, imageUrl: data.url }));
+      else alert('Upload failed: ' + data.error);
+    } catch (err) {
+      alert('Upload error: ' + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const deleteProject = async (id) => {
     if (!confirm('Delete this project?')) return;
     await fetch(`${API_BASE}/projects/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
@@ -98,9 +121,6 @@ const AdminProjects = () => {
                   { key: 'category', label: 'Category', type: 'text', required: true },
                   { key: 'description', label: 'Description', type: 'textarea', required: true },
                   { key: 'tags', label: 'Tags (comma-separated)', type: 'text' },
-                  { key: 'imageUrl', label: 'Image URL (Unsplash or any image URL)', type: 'text' },
-                  { key: 'liveUrl', label: 'Live URL', type: 'text' },
-                  { key: 'githubUrl', label: 'GitHub URL', type: 'text' },
                 ].map((field) => (
                   <div key={field.key} style={{ marginBottom: 'var(--space-4)' }}>
                     <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, color: 'var(--on-surface-variant)', marginBottom: 'var(--space-1)' }}>{field.label}</label>
@@ -111,6 +131,26 @@ const AdminProjects = () => {
                     )}
                   </div>
                 ))}
+                {/* Image URL + Cloudinary Upload */}
+                <div style={{ marginBottom: 'var(--space-4)' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, color: 'var(--on-surface-variant)', marginBottom: 'var(--space-1)' }}>Image</label>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <input type="text" className="input-terminal" placeholder="Paste URL or upload below" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} style={{ flex: 1 }} />
+                    <label style={{ cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary)', padding: '0.4rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(98,0,238,0.25)', background: 'rgba(98,0,238,0.04)' }}>
+                      <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                      <Upload size={13} />{uploading ? 'Uploading…' : 'Upload'}
+                    </label>
+                  </div>
+                </div>
+                {/* Live & GitHub URLs */}
+                <div style={{ marginBottom: 'var(--space-4)' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, color: 'var(--on-surface-variant)', marginBottom: 'var(--space-1)' }}>Live URL</label>
+                  <input type="text" className="input-terminal" value={form.liveUrl} onChange={(e) => setForm({ ...form, liveUrl: e.target.value })} />
+                </div>
+                <div style={{ marginBottom: 'var(--space-4)' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, color: 'var(--on-surface-variant)', marginBottom: 'var(--space-1)' }}>GitHub URL</label>
+                  <input type="text" className="input-terminal" value={form.githubUrl} onChange={(e) => setForm({ ...form, githubUrl: e.target.value })} />
+                </div>
                 {/* Image Preview */}
                 {form.imageUrl && (
                   <div style={{ marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '120px' }}>

@@ -9,7 +9,7 @@ dotenv.config();
 const ADMIN = {
   email: 'admin@prodivity.tech',
   password: 'admin123',
-  name: 'Avi Garg',
+  name: 'Admin',
 };
 
 const PROJECTS = [
