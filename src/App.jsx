@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
@@ -12,6 +12,12 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminContacts from './pages/admin/AdminContacts';
 import AdminProjects from './pages/admin/AdminProjects';
+
+// Detect if this is an admin subdomain (e.g. admin.prodivity.tech or admin-prodivity.vercel.app)
+const isAdminDomain = () => {
+  const host = window.location.hostname;
+  return host.startsWith('admin.') || host.startsWith('admin-');
+};
 
 // Main public website
 const HomePage = () => (
@@ -28,17 +34,27 @@ const HomePage = () => (
 );
 
 function App() {
+  const adminDomain = isAdminDomain();
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Website */}
-        <Route path="/" element={<HomePage />} />
-
-        {/* Admin Panel — hidden routes, not linked from public site */}
-        <Route path="/admin" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/contacts" element={<AdminContacts />} />
-        <Route path="/admin/projects" element={<AdminProjects />} />
+        {adminDomain ? (
+          // ── Admin subdomain only (admin.yourdomain.com) ──
+          <>
+            <Route path="/" element={<AdminLogin />} />
+            <Route path="/dashboard" element={<AdminDashboard />} />
+            <Route path="/contacts" element={<AdminContacts />} />
+            <Route path="/projects" element={<AdminProjects />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </>
+        ) : (
+          // ── Public website only — no admin routes ──
+          <>
+            <Route path="/" element={<HomePage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </>
+        )}
       </Routes>
     </BrowserRouter>
   );

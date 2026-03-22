@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { BarChart3, Users, FolderOpen, MessageSquare, LogOut, TrendingUp } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { BarChart3, Users, FolderOpen, MessageSquare, TrendingUp } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import API_BASE from '../../config';
+import AdminNav, { adminPath } from './AdminNav';
 
 const AdminDashboard = () => {
   const [data, setData] = useState(null);
@@ -12,7 +13,7 @@ const AdminDashboard = () => {
   const adminUser = JSON.parse(localStorage.getItem('admin_user') || '{}');
 
   useEffect(() => {
-    if (!token) { navigate('/admin'); return; }
+    if (!token) { navigate(adminPath('/')); return; }
     fetchDashboard();
   }, []);
 
@@ -21,7 +22,7 @@ const AdminDashboard = () => {
       const res = await fetch(`${API_BASE}/dashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.status === 401) { localStorage.clear(); navigate('/admin'); return; }
+      if (res.status === 401) { localStorage.clear(); navigate(adminPath('/')); return; }
       const json = await res.json();
       setData(json);
     } catch (err) {
@@ -29,12 +30,6 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_user');
-    navigate('/admin');
   };
 
   if (loading) {
@@ -56,30 +51,7 @@ const AdminDashboard = () => {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--surface-dim)' }}>
-      {/* Admin Nav */}
-      <nav style={{
-        background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(203,196,209,0.3)', padding: '0 var(--space-6)', height: '64px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-6)' }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--on-surface)' }}>
-            ⚡ Admin Panel
-          </span>
-          <Link to="/admin/dashboard" style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--primary)', textDecoration: 'none' }}>Dashboard</Link>
-          <Link to="/admin/contacts" style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--on-surface-variant)', textDecoration: 'none' }}>Contacts</Link>
-          <Link to="/admin/projects" style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--on-surface-variant)', textDecoration: 'none' }}>Projects</Link>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--outline)' }}>{adminUser.email}</span>
-          <button onClick={handleLogout} style={{
-            display: 'flex', alignItems: 'center', gap: '0.35rem', background: 'none', border: 'none',
-            color: 'var(--error)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500,
-          }}>
-            <LogOut size={15} /> Logout
-          </button>
-        </div>
-      </nav>
+      <AdminNav active="Dashboard" />
 
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: 'var(--space-8) var(--space-6)' }}>
         <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: 'var(--space-8)' }}>
@@ -126,7 +98,7 @@ const AdminDashboard = () => {
           <div className="glass-card" style={{ padding: 'var(--space-6)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-5)' }}>
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 600, color: 'var(--on-surface)' }}>Recent Leads</h3>
-              <Link to="/admin/contacts" style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>View all →</Link>
+              <a href={adminPath('/contacts')} style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>View all →</a>
             </div>
             {data?.recentContacts?.length > 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>

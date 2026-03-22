@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, Trash2, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Trash2 } from 'lucide-react';
 import API_BASE from '../../config';
+import AdminNav, { adminPath } from './AdminNav';
 
 const AdminContacts = () => {
   const [contacts, setContacts] = useState([]);
@@ -10,10 +11,9 @@ const AdminContacts = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const token = localStorage.getItem('admin_token');
-  const adminUser = JSON.parse(localStorage.getItem('admin_user') || '{}');
 
   useEffect(() => {
-    if (!token) { navigate('/admin'); return; }
+    if (!token) { navigate(adminPath('/')); return; }
     fetchContacts();
   }, [page]);
 
@@ -22,7 +22,7 @@ const AdminContacts = () => {
       const res = await fetch(`${API_BASE}/contacts?page=${page}&limit=15`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.status === 401) { localStorage.clear(); navigate('/admin'); return; }
+      if (res.status === 401) { localStorage.clear(); navigate(adminPath('/')); return; }
       const data = await res.json();
       setContacts(data.contacts);
       setTotal(data.total);
@@ -51,8 +51,6 @@ const AdminContacts = () => {
     fetchContacts();
   };
 
-  const handleLogout = () => { localStorage.clear(); navigate('/admin'); };
-
   const statusColor = (s) => {
     switch (s) {
       case 'new': return { bg: 'rgba(22,163,74,0.1)', color: '#16a34a' };
@@ -64,31 +62,12 @@ const AdminContacts = () => {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--surface-dim)' }}>
-      <nav style={{
-        background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(203,196,209,0.3)', padding: '0 var(--space-6)', height: '64px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-6)' }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--on-surface)' }}>⚡ Admin Panel</span>
-          <Link to="/admin/dashboard" style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--on-surface-variant)', textDecoration: 'none' }}>Dashboard</Link>
-          <Link to="/admin/contacts" style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--primary)', textDecoration: 'none' }}>Contacts</Link>
-          <Link to="/admin/projects" style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--on-surface-variant)', textDecoration: 'none' }}>Projects</Link>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--outline)' }}>{adminUser.email}</span>
-          <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500 }}>
-            <LogOut size={15} /> Logout
-          </button>
-        </div>
-      </nav>
+      <AdminNav active="Contacts" />
 
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: 'var(--space-8) var(--space-6)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--on-surface)' }}>
-            Contact Leads ({total})
-          </h1>
-        </div>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: 'var(--space-6)' }}>
+          Contact Leads ({total})
+        </h1>
 
         {loading ? (
           <p style={{ color: 'var(--outline)' }}>Loading...</p>

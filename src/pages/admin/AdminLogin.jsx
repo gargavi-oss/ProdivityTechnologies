@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Zap, LogIn } from 'lucide-react';
 import API_BASE from '../../config';
+import { adminPath } from './AdminNav';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ const AdminLogin = () => {
       if (!res.ok) throw new Error(data.error || 'Login failed');
       localStorage.setItem('admin_token', data.token);
       localStorage.setItem('admin_user', JSON.stringify(data.admin));
-      navigate('/admin/dashboard');
+      navigate(adminPath('/dashboard'));
     } catch (err) {
       setError(err.message);
     } finally {

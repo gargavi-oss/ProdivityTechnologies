@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, Plus, Trash2, Edit, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Trash2, Edit, X } from 'lucide-react';
 import API_BASE from '../../config';
+import AdminNav, { adminPath } from './AdminNav';
 
 const emptyProject = { title: '', category: '', description: '', tags: '', imageUrl: '', liveUrl: '', featured: false, status: 'active' };
 
@@ -14,10 +15,9 @@ const AdminProjects = () => {
   const [form, setForm] = useState(emptyProject);
   const navigate = useNavigate();
   const token = localStorage.getItem('admin_token');
-  const adminUser = JSON.parse(localStorage.getItem('admin_user') || '{}');
 
   useEffect(() => {
-    if (!token) { navigate('/admin'); return; }
+    if (!token) { navigate(adminPath('/')); return; }
     fetchProjects();
   }, []);
 
@@ -26,7 +26,7 @@ const AdminProjects = () => {
       const res = await fetch(`${API_BASE}/projects?limit=50`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.status === 401) { localStorage.clear(); navigate('/admin'); return; }
+      if (res.status === 401) { localStorage.clear(); navigate(adminPath('/')); return; }
       const data = await res.json();
       setProjects(data.projects);
       setTotal(data.total);
@@ -65,28 +65,9 @@ const AdminProjects = () => {
     fetchProjects();
   };
 
-  const handleLogout = () => { localStorage.clear(); navigate('/admin'); };
-
   return (
     <div style={{ minHeight: '100vh', background: 'var(--surface-dim)' }}>
-      <nav style={{
-        background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(203,196,209,0.3)', padding: '0 var(--space-6)', height: '64px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-6)' }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--on-surface)' }}>⚡ Admin Panel</span>
-          <Link to="/admin/dashboard" style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--on-surface-variant)', textDecoration: 'none' }}>Dashboard</Link>
-          <Link to="/admin/contacts" style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--on-surface-variant)', textDecoration: 'none' }}>Contacts</Link>
-          <Link to="/admin/projects" style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--primary)', textDecoration: 'none' }}>Projects</Link>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--outline)' }}>{adminUser.email}</span>
-          <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500 }}>
-            <LogOut size={15} /> Logout
-          </button>
-        </div>
-      </nav>
+      <AdminNav active="Projects" />
 
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: 'var(--space-8) var(--space-6)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
@@ -111,14 +92,13 @@ const AdminProjects = () => {
                 </h2>
                 <button onClick={() => { setShowForm(false); setEditing(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--outline)' }}><X size={20} /></button>
               </div>
-
               <form onSubmit={handleSubmit}>
                 {[
                   { key: 'title', label: 'Title', type: 'text', required: true },
                   { key: 'category', label: 'Category', type: 'text', required: true },
                   { key: 'description', label: 'Description', type: 'textarea', required: true },
                   { key: 'tags', label: 'Tags (comma-separated)', type: 'text' },
-                  { key: 'imageUrl', label: 'Image URL', type: 'text' },
+                  { key: 'imageUrl', label: 'Image URL (Unsplash or any image URL)', type: 'text' },
                   { key: 'liveUrl', label: 'Live URL', type: 'text' },
                 ].map((field) => (
                   <div key={field.key} style={{ marginBottom: 'var(--space-4)' }}>
@@ -130,6 +110,12 @@ const AdminProjects = () => {
                     )}
                   </div>
                 ))}
+                {/* Image Preview */}
+                {form.imageUrl && (
+                  <div style={{ marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '120px' }}>
+                    <img src={form.imageUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                  </div>
+                )}
                 <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: 'var(--space-5)' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', fontSize: '0.85rem', color: 'var(--on-surface-variant)', cursor: 'pointer' }}>
                     <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} /> Featured
@@ -158,7 +144,12 @@ const AdminProjects = () => {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--space-5)' }}>
             {projects.map((p) => (
-              <div key={p._id} className="glass-card" style={{ padding: 'var(--space-6)', position: 'relative' }}>
+              <div key={p._id} className="glass-card" style={{ padding: 'var(--space-6)', position: 'relative', overflow: 'hidden' }}>
+                {p.imageUrl && (
+                  <div style={{ marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '120px' }}>
+                    <img src={p.imageUrl} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                  </div>
+                )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-3)' }}>
                   <span style={{ fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary)' }}>{p.category}</span>
                   <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
@@ -168,12 +159,12 @@ const AdminProjects = () => {
                 </div>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 600, color: 'var(--on-surface)', marginBottom: 'var(--space-2)' }}>{p.title}</h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)', lineHeight: 1.6, marginBottom: 'var(--space-3)' }}>{p.description}</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: 'var(--space-3)' }}>
                   {p.tags?.map((t) => (
                     <span key={t} style={{ fontSize: '0.65rem', padding: '0.15rem 0.5rem', borderRadius: 'var(--radius-full)', background: 'rgba(98,0,238,0.05)', border: '1px solid rgba(98,0,238,0.1)', color: 'var(--on-surface-variant)' }}>{t}</span>
                   ))}
                 </div>
-                <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-3)', fontSize: '0.7rem' }}>
+                <div style={{ display: 'flex', gap: 'var(--space-3)', fontSize: '0.7rem' }}>
                   <span style={{ padding: '0.15rem 0.4rem', borderRadius: 'var(--radius-sm)', background: p.featured ? 'rgba(22,163,74,0.1)' : 'transparent', color: p.featured ? '#16a34a' : 'var(--outline)' }}>
                     {p.featured ? '★ Featured' : 'Not featured'}
                   </span>
