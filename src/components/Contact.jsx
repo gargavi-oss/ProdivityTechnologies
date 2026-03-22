@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Send, Mail, Phone, MapPin } from 'lucide-react';
+import API_BASE from '../config';
 
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
@@ -11,12 +12,30 @@ const fadeUp = {
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-    setFormData({ name: '', email: '', message: '' });
+    setError('');
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/contacts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to send');
+      setSubmitted(true);
+      setFormData({ name: '', email: '', message: '' });
+      setTimeout(() => setSubmitted(false), 4000);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 4000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -142,9 +161,10 @@ const Contact = () => {
             <button
               type="submit"
               className="btn-primary"
-              style={{ width: '100%', justifyContent: 'center', padding: '0.875rem' }}
+              disabled={loading}
+              style={{ width: '100%', justifyContent: 'center', padding: '0.875rem', opacity: loading ? 0.7 : 1 }}
             >
-              {submitted ? '✓ Message Sent!' : <><Send size={16} /> Send Message</>}
+              {loading ? 'Sending...' : submitted ? '✓ Message Sent!' : error ? '✗ ' + error : <><Send size={16} /> Send Message</>}
             </button>
           </motion.form>
 
