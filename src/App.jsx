@@ -13,8 +13,11 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminContacts from './pages/admin/AdminContacts';
 import AdminProjects from './pages/admin/AdminProjects';
 
-// Detect if this is an admin subdomain (e.g. admin.prodivity.tech or admin-prodivity.vercel.app)
+// Admin mode detection:
+// 1. VITE_ADMIN_MODE=true env var (set in Vercel for the admin deployment)
+// 2. Hostname starts with admin. or admin- (for custom domain users)
 const isAdminDomain = () => {
+  if (import.meta.env.VITE_ADMIN_MODE === 'true') return true;
   const host = window.location.hostname;
   return host.startsWith('admin.') || host.startsWith('admin-');
 };

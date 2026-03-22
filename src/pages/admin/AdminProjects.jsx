@@ -4,7 +4,7 @@ import { Plus, Trash2, Edit, X } from 'lucide-react';
 import API_BASE from '../../config';
 import AdminNav, { adminPath } from './AdminNav';
 
-const emptyProject = { title: '', category: '', description: '', tags: '', imageUrl: '', liveUrl: '', featured: false, status: 'active' };
+const emptyProject = { title: '', category: '', description: '', tags: '', imageUrl: '', liveUrl: '', githubUrl: '', featured: false, status: 'active' };
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -100,6 +100,7 @@ const AdminProjects = () => {
                   { key: 'tags', label: 'Tags (comma-separated)', type: 'text' },
                   { key: 'imageUrl', label: 'Image URL (Unsplash or any image URL)', type: 'text' },
                   { key: 'liveUrl', label: 'Live URL', type: 'text' },
+                  { key: 'githubUrl', label: 'GitHub URL', type: 'text' },
                 ].map((field) => (
                   <div key={field.key} style={{ marginBottom: 'var(--space-4)' }}>
                     <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, color: 'var(--on-surface-variant)', marginBottom: 'var(--space-1)' }}>{field.label}</label>

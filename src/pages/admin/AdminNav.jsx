@@ -2,8 +2,9 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 
-// Detect admin subdomain (e.g. admin.prodivity.tech or admin-prodivity.vercel.app)
+// Detect admin mode — env var (Vercel) or admin.* subdomain (custom domain)
 export const isAdminDomain = () => {
+  if (import.meta.env.VITE_ADMIN_MODE === 'true') return true;
   const host = window.location.hostname;
   return host.startsWith('admin.') || host.startsWith('admin-');
 };

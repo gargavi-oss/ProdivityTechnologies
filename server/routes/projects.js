@@ -44,7 +44,7 @@ router.get('/:id', async (req, res) => {
 // POST /api/projects — admin only
 router.post('/', auth, async (req, res) => {
   try {
-    const { title, category, description, tags, imageUrl, liveUrl, featured, status } = req.body;
+    const { title, category, description, tags, imageUrl, liveUrl, githubUrl, featured, status } = req.body;
     if (!title || !category || !description) {
       return res.status(400).json({ error: 'Title, category, and description are required' });
     }
