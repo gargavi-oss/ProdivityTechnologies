@@ -173,9 +173,9 @@ const Contact = () => {
             style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)', justifyContent: 'center' }}
           >
             {[
-              { icon: Mail, label: 'Email Us', value: 'hello@prodivity.tech', href: 'mailto:hello@prodivity.tech' },
-              { icon: Phone, label: 'Call Us', value: '+91 98765 43210', href: 'tel:+919876543210' },
-              { icon: MapPin, label: 'Based In', value: 'India · Remote Worldwide', href: '#' },
+              { icon: Mail, label: 'Email Us', value: 'info.prodivity@gmail.com', href: 'mailto:info.prodivity@gmail.com' },
+              { icon: Phone, label: 'Call Us', value: '+91 7404648978', href: 'tel:+917404648978' },
+              { icon: MapPin, label: 'Based In', value: 'Jagadhri,Yamunaagar,Haryana,India', href: '#' },
             ].map((item, i) => (
               <a key={i} href={item.href} className="glass-card" style={{ padding: 'var(--space-6)', display: 'flex', alignItems: 'center', gap: 'var(--space-4)', textDecoration: 'none' }}>
                 <div style={{ width: '48px', height: '48px', minWidth: '48px', borderRadius: 'var(--radius-lg)', background: 'rgba(98, 0, 238, 0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

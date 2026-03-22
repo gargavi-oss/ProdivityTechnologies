@@ -6,25 +6,17 @@ import {
 } from 'recharts';
 
 const stats = [
-  { value: '150+', label: 'Projects Delivered' },
-  { value: '50+', label: 'Happy Clients' },
+  { value: '4+', label: 'Projects Delivered' },
+  { value: '3+', label: 'Happy Clients' },
   { value: '98%', label: 'Client Satisfaction' },
   { value: '24/7', label: 'Support Available' },
 ];
 
 const growthData = [
-  { month: 'Jan', projects: 8 },
-  { month: 'Feb', projects: 12 },
-  { month: 'Mar', projects: 10 },
-  { month: 'Apr', projects: 15 },
-  { month: 'May', projects: 18 },
-  { month: 'Jun', projects: 14 },
-  { month: 'Jul', projects: 20 },
-  { month: 'Aug', projects: 22 },
-  { month: 'Sep', projects: 25 },
-  { month: 'Oct', projects: 28 },
-  { month: 'Nov', projects: 30 },
-  { month: 'Dec', projects: 35 },
+  { month: 'Jan', projects: 0 },
+  { month: 'Feb', projects: 2 },
+  { month: 'Mar', projects: 2 },
+ 
 ];
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -169,7 +161,7 @@ const Hero = () => {
                 <div>
                   <p style={{ fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--secondary)', marginBottom: '0.25rem' }}>Projects Completed</p>
                   <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--on-surface)' }}>
-                    237 <span style={{ fontSize: '0.75rem', fontWeight: 500, color: '#16a34a' }}>↑ 58%</span>
+                    4 <span style={{ fontSize: '0.75rem', fontWeight: 500, color: '#16a34a' }}>↑ 58%</span>
                   </h3>
                 </div>
                 <span style={{ fontSize: '0.7rem', color: 'var(--outline)', padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-full)', background: 'rgba(0,104,116,0.05)', border: '1px solid rgba(0,104,116,0.1)' }}>2024</span>

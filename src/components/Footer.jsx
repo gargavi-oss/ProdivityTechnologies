@@ -180,13 +180,13 @@ const Footer = () => {
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
               <span style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)' }}>
-                hello@prodivity.tech
+                info.prodivity@gmail.com
               </span>
               <span style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)' }}>
-                +1 (555) 234-5678
+                +91 74046 48978
               </span>
               <span style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)' }}>
-                San Francisco, CA 94107
+                Jagadhri, Yamunaagar, Haryana, India
               </span>
             </div>
           </div>
