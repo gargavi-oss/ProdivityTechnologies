@@ -61,10 +61,10 @@ const Navbar = () => {
           color: 'var(--on-surface)',
           textDecoration: 'none',
         }}>
-          <img src="logo.png" className='w-15' alt="" />
-          <span>Prodivity Technologies
-
-          </span>
+          <img src="logo.png" style={{
+            width: '30%'
+          }} className=' h-12' alt="" />
+        
         </a>
 
         {/* Desktop Links */}
@@ -94,9 +94,15 @@ const Navbar = () => {
               {link.label}
             </a>
           ))}
-          <a href="#contact" className="btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.8rem' }}>
-            Get Started
-          </a>
+        <button
+  onClick={() => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  }}
+  className="btn-primary"
+  style={{ padding: '0.5rem 1.25rem', fontSize: '0.875rem', whiteSpace: 'nowrap' }}
+>
+  Get Started
+</button>
         </div>
 
         {/* Mobile Toggle */}
