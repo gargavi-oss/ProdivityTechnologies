@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { CheckCircle, Target, Users, TrendingUp, Lightbulb } from 'lucide-react';
+import { Target, Users, Zap, Lightbulb } from 'lucide-react';
+import API_BASE from '../config';
 
-const differentiators = [
-  { icon: Target, text: 'Results-driven approach with measurable outcomes' },
-  { icon: Users, text: 'Dedicated team of 40+ senior engineers & designers' },
-  { icon: TrendingUp, text: 'Agile methodology with transparent communication' },
-  { icon: Lightbulb, text: 'Innovation-first mindset backed by industry research' },
+const DEFAULT_STATS = [
+  { icon: Target, value: '98%', label: 'Client Retention', color: 'var(--primary-bright)' },
+  { icon: Zap, value: '4+', label: 'Successful Projects', color: 'var(--secondary)' },
+  { icon: Users, value: '3+', label: 'Happy Clients', color: 'var(--tertiary)' },
+  { icon: Lightbulb, value: '2+', label: 'Years in Business', color: 'var(--primary)' },
 ];
 
 const fadeUp = {
@@ -16,162 +17,187 @@ const fadeUp = {
 };
 
 const About = () => {
+  const [aboutData, setAboutData] = useState({ mission: '', vision: '', description: '' });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/about`)
+      .then((r) => r.json())
+      .then((data) => setAboutData({ mission: data.mission, vision: data.vision, description: data.description }))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
-    <section
-      id="about"
-      className="section"
-      style={{ background: 'var(--surface-lowest)' }}
-    >
+    <section id="about" className="section" style={{ background: 'var(--surface-lowest)' }}>
       <div className="container">
+        {/* Header */}
+        <motion.div {...fadeUp} transition={{ duration: 0.6 }} style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
+          <p className="overline" style={{ marginBottom: 'var(--space-3)' }}>About Us</p>
+          <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', marginBottom: 'var(--space-4)' }}>
+            Building the <span className="gradient-text">Future of Digital</span>
+          </h2>
+          <p style={{ fontSize: '1.05rem', color: 'var(--on-surface-variant)', maxWidth: '600px', margin: '0 auto', lineHeight: 1.75 }}>
+            {aboutData.description || 'We combine cutting-edge technology with thoughtful design to create digital products that make a real difference.'}
+          </p>
+        </motion.div>
+
+        {/* Content Grid */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
-          gap: 'var(--space-16)',
+          gap: 'var(--space-10)',
           alignItems: 'center',
-        }}
-          className="about-grid"
-        >
-          {/* Left – Text */}
-          <motion.div {...fadeUp} transition={{ duration: 0.6 }}>
-            <p className="overline" style={{ marginBottom: 'var(--space-3)' }}>Why Choose Us</p>
-            <h2 style={{
-              fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)',
-              marginBottom: 'var(--space-6)',
-            }}>
-              Engineering <span className="gradient-text">Excellence</span>,{' '}
-              Delivered at Scale
-            </h2>
-            <p style={{
-              fontSize: '1.05rem',
-              lineHeight: 1.75,
-              color: 'var(--on-surface-variant)',
-              marginBottom: 'var(--space-8)',
-            }}>
-              At Prodivity Technologies, we don&apos;t just build software — we engineer
-              digital experiences that transform businesses. Our team combines deep
-              technical expertise with creative vision to deliver solutions that
-              drive real, measurable impact.
-            </p>
+          marginBottom: 'var(--space-16)',
+        }} className="about-grid">
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-              {differentiators.map((item, i) => (
+          {/* Left — Stats Cards Grid */}
+          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 'var(--space-4)',
+            }} className="stats-grid">
+              {DEFAULT_STATS.map((stat, i) => (
                 <motion.div
-                  key={i}
+                  key={stat.label}
                   {...fadeUp}
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
+                  transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
+                  className="glass-card"
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--space-3)',
+                    padding: 'var(--space-6)',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    position: 'relative',
+                    overflow: 'hidden',
                   }}
                 >
+                  {/* Top accent bar */}
                   <div style={{
-                    width: '36px',
-                    height: '36px',
-                    minWidth: '36px',
-                    borderRadius: 'var(--radius-md)',
-                    background: 'rgba(98, 0, 238, 0.06)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
+                    background: `linear-gradient(90deg, ${stat.color}, transparent)`,
+                  }} />
+
+                  <div style={{
+                    width: '40px', height: '40px', borderRadius: 'var(--radius-lg)',
+                    background: `rgba(139, 92, 246, 0.06)`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    margin: '0 auto var(--space-3)',
                   }}>
-                    <item.icon size={18} style={{ color: 'var(--primary)' }} />
+                    <stat.icon size={18} style={{ color: stat.color }} />
                   </div>
-                  <span style={{ fontSize: '0.95rem', color: 'var(--on-surface-variant)' }}>
-                    {item.text}
-                  </span>
+                  <div style={{
+                    fontFamily: 'var(--font-display)', fontSize: '1.75rem', fontWeight: 800,
+                    color: 'var(--on-surface)', letterSpacing: '-0.03em',
+                  }}>
+                    {stat.value}
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--outline)', marginTop: '0.25rem' }}>
+                    {stat.label}
+                  </div>
                 </motion.div>
               ))}
             </div>
           </motion.div>
 
-          {/* Right – Abstract Visual */}
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            style={{
+          {/* Right — Mission & Vision */}
+          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.2 }}>
+            {/* Mission */}
+            <div className="glass-card" style={{
+              padding: 'var(--space-8)',
+              marginBottom: 'var(--space-5)',
               position: 'relative',
-              height: '460px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {/* Main glow */}
-            <div style={{
-              position: 'absolute',
-              width: '320px',
-              height: '320px',
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(98, 0, 238, 0.06) 0%, transparent 70%)',
-              filter: 'blur(40px)',
-            }} />
-
-            {/* Rings */}
-            {[280, 220, 160].map((size, i) => (
-              <div
-                key={size}
-                className="animate-float"
-                style={{
-                  position: 'absolute',
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  borderRadius: '50%',
-                  border: `1px solid rgba(98, 0, 238, ${0.06 + i * 0.03})`,
-                  animationDelay: `${-i * 1.5}s`,
-                }}
-              />
-            ))}
-
-            {/* Center element */}
-            <div style={{
-              position: 'relative',
-              width: '100px',
-              height: '100px',
-              borderRadius: 'var(--radius-2xl)',
-              background: 'linear-gradient(135deg, var(--primary), var(--tertiary))',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 0 60px rgba(98, 0, 238, 0.15)',
+              overflow: 'hidden',
+              cursor: 'pointer',
             }}>
-              <CheckCircle size={40} style={{ color: '#ffffff' }} />
+              <div style={{
+                position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
+                background: 'linear-gradient(90deg, var(--primary-bright), transparent)',
+              }} />
+              <div style={{
+                width: '36px', height: '36px', borderRadius: 'var(--radius-lg)',
+                background: 'var(--primary-container)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: 'var(--space-4)',
+              }}>
+                <Target size={18} style={{ color: 'var(--primary-bright)' }} />
+              </div>
+              <h3 style={{
+                fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 700,
+                color: 'var(--on-surface)', marginBottom: 'var(--space-3)',
+              }}>
+                Our Mission
+              </h3>
+              <p style={{ fontSize: '0.9rem', lineHeight: 1.75, color: 'var(--on-surface-variant)' }}>
+                {aboutData.mission || 'To empower businesses with innovative digital solutions that drive measurable growth and create lasting impact.'}
+              </p>
             </div>
 
-            {/* Floating tech dots */}
-            {[
-              { top: '15%', left: '20%', delay: '-0.5s', size: 8, color: 'var(--secondary)' },
-              { top: '75%', left: '30%', delay: '-2s', size: 6, color: 'var(--primary)' },
-              { top: '25%', right: '15%', delay: '-3s', size: 10, color: 'var(--tertiary)' },
-              { top: '70%', right: '20%', delay: '-1.5s', size: 5, color: 'var(--primary)' },
-            ].map((dot, i) => (
-              <div
-                key={i}
-                className="animate-float"
-                style={{
-                  position: 'absolute',
-                  top: dot.top,
-                  left: dot.left,
-                  right: dot.right,
-                  width: `${dot.size}px`,
-                  height: `${dot.size}px`,
-                  borderRadius: '50%',
-                  background: dot.color,
-                  opacity: 0.4,
-                  animationDelay: dot.delay,
-                }}
-              />
-            ))}
+            {/* Vision */}
+            <div className="glass-card" style={{
+              padding: 'var(--space-8)',
+              position: 'relative',
+              overflow: 'hidden',
+              cursor: 'pointer',
+            }}>
+              <div style={{
+                position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
+                background: 'linear-gradient(90deg, var(--secondary), transparent)',
+              }} />
+              <div style={{
+                width: '36px', height: '36px', borderRadius: 'var(--radius-lg)',
+                background: 'var(--secondary-container)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: 'var(--space-4)',
+              }}>
+                <Lightbulb size={18} style={{ color: 'var(--secondary)' }} />
+              </div>
+              <h3 style={{
+                fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 700,
+                color: 'var(--on-surface)', marginBottom: 'var(--space-3)',
+              }}>
+                Our Vision
+              </h3>
+              <p style={{ fontSize: '0.9rem', lineHeight: 1.75, color: 'var(--on-surface-variant)' }}>
+                {aboutData.vision || 'To be the go-to digital partner for forward-thinking companies worldwide, setting the standard for innovation and quality.'}
+              </p>
+            </div>
           </motion.div>
         </div>
+
+        {/* Differentiators row */}
+        <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.3 }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 'var(--space-4)',
+          }}>
+            {[
+              { label: 'Custom Solutions', desc: 'Every project built from scratch for your unique needs' },
+              { label: 'Agile Delivery', desc: 'Rapid iteration with clear milestones and sprints' },
+              { label: 'Full Ownership', desc: 'You own 100% of the code and intellectual property' },
+              { label: '24/7 Support', desc: 'Round-the-clock assistance post-launch' },
+            ].map((item, i) => (
+              <div key={i} style={{ padding: 'var(--space-5)', borderLeft: '2px solid', borderImage: `linear-gradient(to bottom, var(--primary), transparent) 1` }}>
+                <h4 style={{
+                  fontFamily: 'var(--font-display)', fontSize: '0.9rem', fontWeight: 700,
+                  color: 'var(--on-surface)', marginBottom: '0.5rem',
+                }}>
+                  {item.label}
+                </h4>
+                <p style={{ fontSize: '0.82rem', color: 'var(--on-surface-variant)', lineHeight: 1.65 }}>
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
 
       <style>{`
         @media (max-width: 768px) {
-          .about-grid {
-            grid-template-columns: 1fr !important;
-            gap: var(--space-8) !important;
-          }
+          .about-grid { grid-template-columns: 1fr !important; }
+          .stats-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </section>

@@ -68,19 +68,19 @@ const AdminTestimonials = () => {
             Testimonials ({testimonials.length})
           </h1>
           <button onClick={() => { setForm(emptyT); setEditing(null); setShowForm(true); }} className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}>
-            <Plus size={16} /> Add Testimonial
+            <Plus size={16} aria-hidden="true" /> Add Testimonial
           </button>
         </div>
 
         {/* Form Modal */}
         {showForm && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--space-4)' }}>
-            <div className="glass-card" style={{ width: '100%', maxWidth: '520px', padding: 'var(--space-8)', background: 'rgba(255,255,255,0.97)', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="admin-modal-overlay">
+            <div className="admin-modal" style={{ maxWidth: '520px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-6)' }}>
                 <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 600, color: 'var(--on-surface)' }}>
                   {editing ? 'Edit Testimonial' : 'New Testimonial'}
                 </h2>
-                <button onClick={() => { setShowForm(false); setEditing(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--outline)' }}><X size={20} /></button>
+                <button onClick={() => { setShowForm(false); setEditing(null); }} aria-label="Close modal" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--outline)' }}><X size={20} /></button>
               </div>
               <form onSubmit={handleSubmit}>
                 {[
@@ -128,11 +128,11 @@ const AdminTestimonials = () => {
               <div key={t._id} className="glass-card" style={{ padding: 'var(--space-6)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-3)' }}>
                   <div style={{ display: 'flex', gap: '2px' }}>
-                    {[1,2,3,4,5].map((n) => <Star key={n} size={12} fill={n <= t.rating ? '#f59e0b' : 'none'} stroke={n <= t.rating ? '#f59e0b' : '#ccc'} />)}
+                    {[1,2,3,4,5].map((n) => <Star key={n} size={12} fill={n <= t.rating ? '#A78BFA' : 'none'} stroke={n <= t.rating ? '#A78BFA' : 'rgba(255,255,255,0.15)'} />)}
                   </div>
                   <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                    <button onClick={() => startEdit(t)} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer' }}><Edit size={14} /></button>
-                    <button onClick={() => deleteT(t._id)} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer' }}><Trash2 size={14} /></button>
+                    <button onClick={() => startEdit(t)} aria-label={`Edit testimonial from ${t.name}`} style={{ background: 'none', border: 'none', color: 'var(--primary-bright)', cursor: 'pointer' }}><Edit size={14} /></button>
+                    <button onClick={() => deleteT(t._id)} aria-label={`Delete testimonial from ${t.name}`} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer' }}><Trash2 size={14} /></button>
                   </div>
                 </div>
                 <p style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)', fontStyle: 'italic', lineHeight: 1.6, marginBottom: 'var(--space-4)' }}>
@@ -140,9 +140,13 @@ const AdminTestimonials = () => {
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                   {t.avatarUrl ? (
-                    <img src={t.avatarUrl} alt={t.name} style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                    <img src={t.avatarUrl} alt={`${t.name}'s avatar`} style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(139, 92, 246, 0.2)' }} onError={(e) => { e.target.style.display = 'none'; }} />
                   ) : (
-                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(98,0,238,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.7rem', color: 'var(--primary)' }}>
+                    <div style={{
+                      width: '36px', height: '36px', borderRadius: '50%',
+                      background: 'rgba(139, 92, 246, 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontWeight: 700, fontSize: '0.7rem', color: 'var(--primary-bright)',
+                    }}>
                       {t.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                     </div>
                   )}
@@ -150,7 +154,11 @@ const AdminTestimonials = () => {
                     <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--on-surface)' }}>{t.name}</div>
                     <div style={{ fontSize: '0.7rem', color: 'var(--outline)' }}>{t.role}{t.company ? ` · ${t.company}` : ''}</div>
                   </div>
-                  {t.featured && <span style={{ marginLeft: 'auto', fontSize: '0.65rem', fontWeight: 600, color: '#16a34a', background: 'rgba(22,163,74,0.1)', padding: '0.15rem 0.4rem', borderRadius: 'var(--radius-sm)' }}>Featured</span>}
+                  {t.featured && <span style={{
+                    marginLeft: 'auto', fontSize: '0.65rem', fontWeight: 600,
+                    color: '#22D3EE', background: 'rgba(34, 211, 238, 0.1)',
+                    padding: '0.15rem 0.4rem', borderRadius: 'var(--radius-sm)',
+                  }}>Featured</span>}
                 </div>
               </div>
             ))}

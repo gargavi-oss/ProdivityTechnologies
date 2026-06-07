@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Play } from 'lucide-react';
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from 'recharts';
 import API_BASE from '../config';
 
 const DEFAULT_STATS = [
@@ -12,36 +9,6 @@ const DEFAULT_STATS = [
   { value: '98%', label: 'Client Satisfaction' },
   { value: '24/7', label: 'Support Available' },
 ];
-
-const growthData = [
-  { month: 'Jan', projects: 0 },
-  { month: 'Feb', projects: 2 },
-  { month: 'Mar', projects: 2 },
- 
-];
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div style={{
-        background: 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(98,0,238,0.12)',
-        borderRadius: 'var(--radius-md)',
-        padding: '0.6rem 0.85rem',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-      }}>
-        <p style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '0.8rem', color: 'var(--on-surface)', marginBottom: '0.25rem' }}>{label}</p>
-        {payload.map((p, i) => (
-          <p key={i} style={{ fontSize: '0.75rem', color: p.color, margin: 0 }}>
-            {p.name}: {p.value}
-          </p>
-        ))}
-      </div>
-    );
-  }
-  return null;
-};
 
 const Hero = () => {
   const [stats, setStats] = useState(DEFAULT_STATS);
@@ -63,12 +30,13 @@ const Hero = () => {
           }));
         }
       })
-      .catch(() => {}); // silently keep defaults on error
+      .catch(() => {});
   }, []);
 
   return (
     <section
       id="home"
+      className="noise-overlay"
       style={{
         position: 'relative',
         minHeight: '100vh',
@@ -79,80 +47,98 @@ const Hero = () => {
         background: 'var(--surface-lowest)',
       }}
     >
-      {/* Background */}
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-        <div className="animate-float" style={{
-          position: 'absolute', top: '10%', right: '15%', width: '400px', height: '400px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(98, 0, 238, 0.06) 0%, transparent 70%)', filter: 'blur(60px)',
+      {/* Background — Aurora Orbs */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+        {/* Primary purple aurora */}
+        <div style={{
+          position: 'absolute', top: '8%', right: '15%', width: '550px', height: '550px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.09) 0%, transparent 60%)',
+          filter: 'blur(80px)',
         }} />
-        <div className="animate-float" style={{
-          position: 'absolute', bottom: '20%', left: '10%', width: '300px', height: '300px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0, 104, 116, 0.05) 0%, transparent 70%)', filter: 'blur(50px)', animationDelay: '-2s',
+        {/* Secondary cyan aurora */}
+        <div style={{
+          position: 'absolute', bottom: '15%', left: '5%', width: '450px', height: '450px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.05) 0%, transparent 60%)',
+          filter: 'blur(70px)',
         }} />
+        {/* Tertiary rose aurora */}
+        <div style={{
+          position: 'absolute', top: '55%', right: '5%', width: '350px', height: '350px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(244, 114, 182, 0.03) 0%, transparent 60%)',
+          filter: 'blur(60px)',
+        }} />
+        {/* Subtle grid */}
         <div style={{
           position: 'absolute', inset: 0,
-          backgroundImage: `linear-gradient(rgba(98, 0, 238, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(98, 0, 238, 0.03) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-        }} />
-        <div className="animate-float" style={{
-          position: 'absolute', top: '25%', left: '8%', width: '60px', height: '60px',
-          border: '1px solid rgba(98, 0, 238, 0.08)', borderRadius: 'var(--radius-lg)', transform: 'rotate(45deg)', animationDelay: '-1s',
-        }} />
-        <div className="animate-float" style={{
-          position: 'absolute', top: '60%', right: '12%', width: '40px', height: '40px',
-          border: '1px solid rgba(0, 104, 116, 0.08)', borderRadius: '50%', animationDelay: '-3s',
+          backgroundImage: `linear-gradient(rgba(139, 92, 246, 0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.018) 1px, transparent 1px)`,
+          backgroundSize: '80px 80px',
         }} />
       </div>
 
-      {/* Content — Two Column: Text Left, Chart Right */}
+      {/* Content */}
       <div className="container" style={{
         position: 'relative',
         zIndex: 2,
-        paddingTop: '120px',
-        paddingBottom: '60px',
+        paddingTop: '140px',
+        paddingBottom: '80px',
       }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 'var(--space-10)',
+          gridTemplateColumns: '1.1fr 0.9fr',
+          gap: 'var(--space-12)',
           alignItems: 'center',
         }} className="hero-grid">
 
           {/* Left — Text */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+              transition={{ delay: 0.25, duration: 0.4 }}
               className="overline"
-              style={{ marginBottom: 'var(--space-4)' }}
+              style={{ marginBottom: 'var(--space-5)' }}
             >
               <span style={{
-                display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%',
-                background: 'var(--primary)', marginRight: '0.5rem', animation: 'data-pulse 2s ease-in-out infinite',
+                display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%',
+                background: 'var(--primary)', marginRight: '0.6rem',
+                animation: 'data-pulse 2s ease-in-out infinite',
               }} />
               Digital Products Agency
             </motion.p>
 
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.7 }}
-              style={{ fontSize: 'clamp(2.25rem, 4.5vw, 3.5rem)', lineHeight: 1.08, marginBottom: 'var(--space-6)' }}
+              transition={{ delay: 0.35, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+                lineHeight: 1.05,
+                marginBottom: 'var(--space-6)',
+                fontWeight: 800,
+                letterSpacing: '-0.04em',
+              }}
             >
-              We Build Digital Products{' '}
+              We Build Digital
+              <br />
+              Products{' '}
               <span className="gradient-text">That Drive Growth</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.6 }}
-              style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--on-surface-variant)', maxWidth: '520px', marginBottom: 'var(--space-8)' }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              style={{
+                fontSize: '1.05rem',
+                lineHeight: 1.75,
+                color: 'var(--on-surface-variant)',
+                maxWidth: '480px',
+                marginBottom: 'var(--space-10)',
+              }}
             >
               Comprehensive digital transformation services tailored for modern enterprises
               and startups looking to scale. From concept to deployment, we turn your vision into reality.
@@ -161,57 +147,124 @@ const Hero = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
+              transition={{ delay: 0.65, duration: 0.4 }}
               style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}
             >
-              <a href="#contact" className="btn-primary" style={{ padding: '0.875rem 2rem', fontSize: '0.95rem' }}>
+              <a href="#contact" className="btn-primary" style={{ padding: '0.9rem 2.2rem', fontSize: '0.95rem', cursor: 'pointer' }}>
                 Get Started <ArrowRight size={18} />
               </a>
-              <a href="#portfolio" className="btn-secondary" style={{ padding: '0.875rem 2rem', fontSize: '0.95rem' }}>
+              <a href="#portfolio" className="btn-secondary" style={{ padding: '0.9rem 2.2rem', fontSize: '0.95rem', cursor: 'pointer' }}>
                 <Play size={16} /> View Our Work
               </a>
             </motion.div>
           </motion.div>
 
-          {/* Right — Projects Completed Chart */}
+          {/* Right — Abstract Premium Visual */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5, duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: 'relative',
+              height: '480px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            <div className="glass-card" style={{ padding: 'var(--space-6)', overflow: 'hidden' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-5)' }}>
-                <div>
-                  <p style={{ fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--secondary)', marginBottom: '0.25rem' }}>Projects Completed</p>
-                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--on-surface)' }}>
-                    4 <span style={{ fontSize: '0.75rem', fontWeight: 500, color: '#16a34a' }}>↑ 58%</span>
-                  </h3>
-                </div>
-                <span style={{ fontSize: '0.7rem', color: 'var(--outline)', padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-full)', background: 'rgba(0,104,116,0.05)', border: '1px solid rgba(0,104,116,0.1)' }}>2024</span>
-              </div>
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={growthData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(203,196,209,0.3)" vertical={false} />
-                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#7a757f' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: '#7a757f' }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="projects" name="Projects" fill="#006874" radius={[4, 4, 0, 0]} barSize={24} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {/* Central glowing orb */}
+            <div style={{
+              position: 'absolute',
+              width: '300px',
+              height: '300px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(139, 92, 246, 0.14) 0%, rgba(139, 92, 246, 0.03) 45%, transparent 65%)',
+              filter: 'blur(2px)',
+            }} />
+
+            {/* Orbital rings */}
+            {[270, 210, 145].map((size, i) => (
+              <div
+                key={size}
+                style={{
+                  position: 'absolute',
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  borderRadius: '50%',
+                  border: `1px solid rgba(139, 92, 246, ${0.06 + i * 0.04})`,
+                  animation: `float ${7 + i * 2.5}s ease-in-out infinite`,
+                  animationDelay: `${-i * 1.5}s`,
+                }}
+              />
+            ))}
+
+            {/* Center element — Purple crystal */}
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
+              style={{
+                position: 'relative',
+                width: '80px',
+                height: '80px',
+                borderRadius: 'var(--radius-xl)',
+                background: 'linear-gradient(135deg, var(--primary), var(--primary-bright), var(--secondary))',
+                backgroundSize: '200% 200%',
+                animation: 'gradient-shift 5s ease infinite',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 0 80px rgba(139, 92, 246, 0.25), 0 0 160px rgba(139, 92, 246, 0.06)',
+                transform: 'rotate(45deg)',
+              }}
+            >
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: 'var(--radius-md)',
+                background: 'rgba(8, 8, 13, 0.35)',
+                backdropFilter: 'blur(8px)',
+              }} />
+            </motion.div>
+
+            {/* Floating accent dots */}
+            {[
+              { top: '18%', left: '22%', size: 6, color: 'var(--primary-bright)', delay: '-1s' },
+              { top: '72%', left: '25%', size: 4, color: 'var(--secondary)', delay: '-3s' },
+              { top: '20%', right: '18%', size: 7, color: 'var(--primary)', delay: '-2s' },
+              { top: '68%', right: '22%', size: 5, color: 'var(--tertiary)', delay: '-4s' },
+              { top: '45%', left: '10%', size: 3, color: 'var(--primary-bright)', delay: '-0.5s' },
+              { top: '50%', right: '8%', size: 4, color: 'var(--secondary)', delay: '-2.5s' },
+            ].map((dot, i) => (
+              <div
+                key={i}
+                className="animate-float"
+                style={{
+                  position: 'absolute',
+                  top: dot.top,
+                  left: dot.left,
+                  right: dot.right,
+                  width: `${dot.size}px`,
+                  height: `${dot.size}px`,
+                  borderRadius: '50%',
+                  background: dot.color,
+                  opacity: 0.45,
+                  animationDelay: dot.delay,
+                }}
+              />
+            ))}
           </motion.div>
         </div>
 
-        {/* Stats */}
+        {/* Stats Strip */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.7 }}
+          transition={{ delay: 0.85, duration: 0.6 }}
           style={{
-            marginTop: 'var(--space-12)',
+            marginTop: 'var(--space-16)',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-            gap: 'var(--space-4)',
+            gap: 'var(--space-6)',
             maxWidth: '700px',
           }}
         >
@@ -220,7 +273,7 @@ const Hero = () => {
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 + i * 0.1, duration: 0.5 }}
+              transition={{ delay: 0.95 + i * 0.1, duration: 0.4 }}
               style={{
                 padding: 'var(--space-4)',
                 borderLeft: '2px solid',
@@ -228,12 +281,12 @@ const Hero = () => {
               }}
             >
               <div style={{
-                fontFamily: 'var(--font-display)', fontSize: '1.75rem', fontWeight: 700,
-                color: 'var(--on-surface)', letterSpacing: '-0.02em',
+                fontFamily: 'var(--font-display)', fontSize: '1.85rem', fontWeight: 800,
+                color: 'var(--on-surface)', letterSpacing: '-0.03em',
               }}>
                 {stat.value}
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--outline)', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--outline)', marginTop: '0.3rem', letterSpacing: '0.02em' }}>
                 {stat.label}
               </div>
             </motion.div>
@@ -243,8 +296,9 @@ const Hero = () => {
 
       {/* Bottom gradient fade */}
       <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: '120px',
-        background: 'linear-gradient(to top, var(--surface-low), transparent)', pointerEvents: 'none',
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: '150px',
+        background: 'linear-gradient(to top, var(--surface-dim), transparent)',
+        pointerEvents: 'none', zIndex: 2,
       }} />
 
       <style>{`

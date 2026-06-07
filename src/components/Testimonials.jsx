@@ -10,34 +10,36 @@ const fadeUp = {
 };
 
 const Stars = ({ rating }) => (
-  <div style={{ display: 'flex', gap: '2px', marginBottom: 'var(--space-4)' }}>
+  <div style={{ display: 'flex', gap: '2px', marginBottom: 'var(--space-4)' }} aria-label={`Rated ${rating} out of 5 stars`} role="img">
     {[1, 2, 3, 4, 5].map((n) => (
-      <Star key={n} size={14} fill={n <= rating ? '#f59e0b' : 'none'} stroke={n <= rating ? '#f59e0b' : '#ccc'} />
+      <Star key={n} size={14} fill={n <= rating ? '#FBBF24' : 'none'} stroke={n <= rating ? '#FBBF24' : 'var(--outline-variant)'} aria-hidden="true" />
     ))}
   </div>
 );
 
-// Fallback avatar initials
 const Avatar = ({ name, avatarUrl }) => {
   const initials = name?.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
-  const colors = ['#6200ee', '#006874', '#004eb5', '#9c27b0', '#0097a7'];
-  const color = colors[name?.charCodeAt(0) % colors.length] || '#6200ee';
 
   if (avatarUrl) {
     return (
       <img
         src={avatarUrl}
-        alt={name}
+        alt={`Photo of ${name}`}
+        loading="lazy"
         onError={(e) => { e.target.style.display = 'none'; }}
-        style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(98,0,238,0.1)' }}
+        style={{
+          width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover',
+          border: '2px solid rgba(139, 92, 246, 0.15)',
+        }}
       />
     );
   }
   return (
-    <div style={{
+    <div role="img" aria-label={`Avatar for ${name}`} style={{
       width: '48px', height: '48px', borderRadius: '50%',
-      background: color, display: 'flex', alignItems: 'center',
-      justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: '1rem',
+      background: 'rgba(139, 92, 246, 0.12)',
+      display: 'flex', alignItems: 'center',
+      justifyContent: 'center', color: 'var(--primary-bright)', fontWeight: 700, fontSize: '1rem',
       fontFamily: 'var(--font-display)',
     }}>
       {initials}
@@ -65,7 +67,7 @@ const Testimonials = () => {
           <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', marginBottom: 'var(--space-4)' }}>
             What Our <span className="gradient-text">Clients Say</span>
           </h2>
-          <p style={{ fontSize: '1.05rem', color: 'var(--on-surface-variant)', maxWidth: '500px', margin: '0 auto' }}>
+          <p style={{ fontSize: '1.05rem', color: 'var(--on-surface-variant)', maxWidth: '500px', margin: '0 auto', lineHeight: 1.75 }}>
             Real feedback from real clients who trusted us to build their vision.
           </p>
         </motion.div>
@@ -73,7 +75,7 @@ const Testimonials = () => {
         {loading && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--space-5)' }}>
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="glass-card" style={{ height: '200px', opacity: 0.4 }} />
+              <div key={i} className="glass-card animate-pulse-glow" style={{ height: '200px', opacity: 0.3 }} aria-hidden="true" />
             ))}
           </div>
         )}
@@ -93,14 +95,21 @@ const Testimonials = () => {
                 style={{ padding: 'var(--space-8)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
               >
                 <div>
-                  {/* Quote mark */}
-                  <div style={{ fontSize: '3rem', lineHeight: 0.8, color: 'var(--primary)', opacity: 0.12, fontFamily: 'Georgia, serif', marginBottom: 'var(--space-3)' }}>"</div>
+                  {/* Large purple quote mark — decorative only */}
+                  <div aria-hidden="true" style={{
+                    fontSize: '4rem', lineHeight: 0.7, color: 'var(--primary)', opacity: 0.18,
+                    fontFamily: 'Georgia, serif', marginBottom: 'var(--space-4)', fontWeight: 700,
+                  }}>"</div>
                   <Stars rating={t.rating || 5} />
-                  <p style={{ fontSize: '0.9rem', lineHeight: 1.75, color: 'var(--on-surface-variant)', fontStyle: 'italic', marginBottom: 'var(--space-6)' }}>
+                  <blockquote style={{
+                    fontSize: '0.9rem', lineHeight: 1.8, color: 'var(--on-surface-variant)',
+                    fontStyle: 'italic', marginBottom: 'var(--space-6)',
+                    margin: 0, padding: 0, borderLeft: 'none',
+                  }}>
                     &ldquo;{t.content}&rdquo;
-                  </p>
+                  </blockquote>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginTop: 'var(--space-4)' }}>
                   <Avatar name={t.name} avatarUrl={t.avatarUrl} />
                   <div>
                     <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, color: 'var(--on-surface)', fontSize: '0.9rem' }}>{t.name}</div>

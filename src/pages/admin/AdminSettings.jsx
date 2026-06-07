@@ -49,7 +49,10 @@ const AdminSettings = () => {
     <div style={{ minHeight: '100vh', background: 'var(--surface-dim)' }}>
       <AdminNav active="Settings" />
       <div style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--space-8) var(--space-6)' }}>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: 'var(--space-2)' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700,
+          color: 'var(--on-surface)', marginBottom: 'var(--space-2)',
+        }}>
           Site Settings
         </h1>
         <p style={{ color: 'var(--on-surface-variant)', fontSize: '0.9rem', marginBottom: 'var(--space-8)' }}>
@@ -59,13 +62,19 @@ const AdminSettings = () => {
         {loading ? <p style={{ color: 'var(--outline)' }}>Loading...</p> : (
           <>
             <div className="glass-card" style={{ padding: 'var(--space-8)', marginBottom: 'var(--space-6)' }}>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 600, color: 'var(--on-surface)', marginBottom: 'var(--space-6)' }}>
+              <h2 style={{
+                fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 600,
+                color: 'var(--on-surface)', marginBottom: 'var(--space-6)',
+              }}>
                 Hero Stats
               </h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-5)' }}>
                 {statSettings.map((s) => (
                   <div key={s.key}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, color: 'var(--on-surface-variant)', marginBottom: 'var(--space-1)' }}>
+                    <label style={{
+                      display: 'block', fontSize: '0.8rem', fontWeight: 500,
+                      color: 'var(--on-surface-variant)', marginBottom: 'var(--space-1)',
+                    }}>
                       {s.label || s.key}
                     </label>
                     <input
@@ -88,9 +97,12 @@ const AdminSettings = () => {
               onClick={handleSave}
               disabled={saving}
               className="btn-primary"
-              style={{ padding: '0.7rem 1.5rem', justifyContent: 'center', opacity: saving ? 0.7 : 1 }}
+              style={{
+                padding: '0.7rem 1.5rem', justifyContent: 'center',
+                opacity: saving ? 0.7 : 1, cursor: saving ? 'wait' : 'pointer',
+              }}
             >
-              <Save size={16} />
+              <Save size={16} aria-hidden="true" />
               {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save Changes'}
             </button>
           </>

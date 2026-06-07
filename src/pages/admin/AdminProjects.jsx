@@ -101,19 +101,19 @@ const AdminProjects = () => {
             onClick={() => { setForm(emptyProject); setEditing(null); setShowForm(true); }}
             className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
           >
-            <Plus size={16} /> Add Project
+            <Plus size={16} aria-hidden="true" /> Add Project
           </button>
         </div>
 
         {/* Form Modal */}
         {showForm && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--space-4)' }}>
-            <div className="glass-card" style={{ width: '100%', maxWidth: '560px', padding: 'var(--space-8)', background: 'rgba(255,255,255,0.97)', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="admin-modal-overlay">
+            <div className="admin-modal">
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-6)' }}>
                 <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 600, color: 'var(--on-surface)' }}>
                   {editing ? 'Edit Project' : 'New Project'}
                 </h2>
-                <button onClick={() => { setShowForm(false); setEditing(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--outline)' }}><X size={20} /></button>
+                <button onClick={() => { setShowForm(false); setEditing(null); }} aria-label="Close modal" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--outline)' }}><X size={20} /></button>
               </div>
               <form onSubmit={handleSubmit}>
                 {[
@@ -136,9 +136,14 @@ const AdminProjects = () => {
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, color: 'var(--on-surface-variant)', marginBottom: 'var(--space-1)' }}>Image</label>
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     <input type="text" className="input-terminal" placeholder="Paste URL or upload below" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} style={{ flex: 1 }} />
-                    <label style={{ cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary)', padding: '0.4rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(98,0,238,0.25)', background: 'rgba(98,0,238,0.04)' }}>
+                    <label style={{
+                      cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                      fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary-bright)',
+                      padding: '0.4rem 0.75rem', borderRadius: 'var(--radius-md)',
+                      border: '1px solid rgba(139, 92, 246, 0.25)', background: 'rgba(139, 92, 246, 0.06)',
+                    }}>
                       <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
-                      <Upload size={13} />{uploading ? 'Uploading…' : 'Upload'}
+                      <Upload size={13} aria-hidden="true" />{uploading ? 'Uploading…' : 'Upload'}
                     </label>
                   </div>
                 </div>
@@ -157,7 +162,7 @@ const AdminProjects = () => {
                     <img src={form.imageUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; }} />
                   </div>
                 )}
-                <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: 'var(--space-5)' }}>
+                <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: 'var(--space-5)', alignItems: 'center' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', fontSize: '0.85rem', color: 'var(--on-surface-variant)', cursor: 'pointer' }}>
                     <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} /> Featured
                   </label>
@@ -188,25 +193,33 @@ const AdminProjects = () => {
               <div key={p._id} className="glass-card" style={{ padding: 'var(--space-6)', position: 'relative', overflow: 'hidden' }}>
                 {p.imageUrl && (
                   <div style={{ marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '120px' }}>
-                    <img src={p.imageUrl} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                    <img src={p.imageUrl} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" onError={(e) => { e.target.style.display = 'none'; }} />
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-3)' }}>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary)' }}>{p.category}</span>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary-bright)' }}>{p.category}</span>
                   <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                    <button onClick={() => startEdit(p)} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer' }} title="Edit"><Edit size={14} /></button>
-                    <button onClick={() => deleteProject(p._id)} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer' }} title="Delete"><Trash2 size={14} /></button>
+                    <button onClick={() => startEdit(p)} aria-label={`Edit ${p.title}`} style={{ background: 'none', border: 'none', color: 'var(--primary-bright)', cursor: 'pointer' }}><Edit size={14} /></button>
+                    <button onClick={() => deleteProject(p._id)} aria-label={`Delete ${p.title}`} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer' }}><Trash2 size={14} /></button>
                   </div>
                 </div>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 600, color: 'var(--on-surface)', marginBottom: 'var(--space-2)' }}>{p.title}</h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)', lineHeight: 1.6, marginBottom: 'var(--space-3)' }}>{p.description}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: 'var(--space-3)' }}>
                   {p.tags?.map((t) => (
-                    <span key={t} style={{ fontSize: '0.65rem', padding: '0.15rem 0.5rem', borderRadius: 'var(--radius-full)', background: 'rgba(98,0,238,0.05)', border: '1px solid rgba(98,0,238,0.1)', color: 'var(--on-surface-variant)' }}>{t}</span>
+                    <span key={t} style={{
+                      fontSize: '0.65rem', padding: '0.15rem 0.5rem', borderRadius: 'var(--radius-full)',
+                      background: 'rgba(139, 92, 246, 0.08)', border: '1px solid rgba(139, 92, 246, 0.12)',
+                      color: 'var(--on-surface-variant)',
+                    }}>{t}</span>
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: 'var(--space-3)', fontSize: '0.7rem' }}>
-                  <span style={{ padding: '0.15rem 0.4rem', borderRadius: 'var(--radius-sm)', background: p.featured ? 'rgba(22,163,74,0.1)' : 'transparent', color: p.featured ? '#16a34a' : 'var(--outline)' }}>
+                  <span style={{
+                    padding: '0.15rem 0.4rem', borderRadius: 'var(--radius-sm)',
+                    background: p.featured ? 'rgba(34, 211, 238, 0.1)' : 'transparent',
+                    color: p.featured ? '#22D3EE' : 'var(--outline)',
+                  }}>
                     {p.featured ? '★ Featured' : 'Not featured'}
                   </span>
                   <span style={{ color: 'var(--outline)' }}>{p.status}</span>

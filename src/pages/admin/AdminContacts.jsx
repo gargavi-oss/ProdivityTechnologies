@@ -53,10 +53,10 @@ const AdminContacts = () => {
 
   const statusColor = (s) => {
     switch (s) {
-      case 'new': return { bg: 'rgba(22,163,74,0.1)', color: '#16a34a' };
-      case 'read': return { bg: 'rgba(0,78,181,0.08)', color: '#004eb5' };
-      case 'responded': return { bg: 'rgba(98,0,238,0.06)', color: '#6200ee' };
-      default: return { bg: 'rgba(122,117,127,0.1)', color: '#7a757f' };
+      case 'new': return { bg: 'rgba(34, 211, 238, 0.1)', color: '#22D3EE' };
+      case 'read': return { bg: 'rgba(167, 139, 250, 0.1)', color: '#A78BFA' };
+      case 'responded': return { bg: 'rgba(139, 92, 246, 0.1)', color: '#8B5CF6' };
+      default: return { bg: 'rgba(122, 117, 127, 0.1)', color: '#7a757f' };
     }
   };
 
@@ -65,7 +65,10 @@ const AdminContacts = () => {
       <AdminNav active="Contacts" />
 
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: 'var(--space-8) var(--space-6)' }}>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: 'var(--space-6)' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700,
+          color: 'var(--on-surface)', marginBottom: 'var(--space-6)',
+        }}>
           Contact Leads ({total})
         </h1>
 
@@ -77,11 +80,11 @@ const AdminContacts = () => {
           </div>
         ) : (
           <div className="glass-card" style={{ overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+            <table className="admin-table">
               <thead>
-                <tr style={{ borderBottom: '1px solid rgba(203,196,209,0.3)' }}>
+                <tr>
                   {['Name', 'Email', 'Message', 'Status', 'Date', 'Actions'].map((h) => (
-                    <th key={h} style={{ padding: 'var(--space-4)', textAlign: 'left', fontWeight: 600, color: 'var(--on-surface-variant)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
+                    <th key={h}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -89,23 +92,32 @@ const AdminContacts = () => {
                 {contacts.map((c) => {
                   const sc = statusColor(c.status);
                   return (
-                    <tr key={c._id} style={{ borderBottom: '1px solid rgba(203,196,209,0.15)' }}>
-                      <td style={{ padding: 'var(--space-4)', fontWeight: 500, color: 'var(--on-surface)' }}>{c.name}</td>
-                      <td style={{ padding: 'var(--space-4)', color: 'var(--on-surface-variant)' }}>{c.email}</td>
-                      <td style={{ padding: 'var(--space-4)', color: 'var(--on-surface-variant)', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.message}</td>
-                      <td style={{ padding: 'var(--space-4)' }}>
+                    <tr key={c._id}>
+                      <td style={{ fontWeight: 500, color: 'var(--on-surface)' }}>{c.name}</td>
+                      <td>{c.email}</td>
+                      <td style={{ maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.message}</td>
+                      <td>
                         <select
                           value={c.status}
                           onChange={(e) => updateStatus(c._id, e.target.value)}
-                          style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.4rem', borderRadius: 'var(--radius-sm)', background: sc.bg, color: sc.color, border: 'none', cursor: 'pointer' }}
+                          style={{
+                            fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.4rem',
+                            borderRadius: 'var(--radius-sm)', background: sc.bg, color: sc.color,
+                            border: 'none', cursor: 'pointer',
+                          }}
                         >
                           {['new', 'read', 'responded', 'archived'].map((s) => <option key={s} value={s}>{s}</option>)}
                         </select>
                       </td>
-                      <td style={{ padding: 'var(--space-4)', color: 'var(--outline)', fontSize: '0.8rem' }}>{new Date(c.createdAt).toLocaleDateString()}</td>
-                      <td style={{ padding: 'var(--space-4)' }}>
-                        <button onClick={() => deleteContact(c._id)} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', opacity: 0.7 }} title="Delete">
-                          <Trash2 size={15} />
+                      <td style={{ color: 'var(--outline)', fontSize: '0.8rem' }}>{new Date(c.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <button
+                          onClick={() => deleteContact(c._id)}
+                          aria-label={`Delete contact from ${c.name}`}
+                          style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', opacity: 0.7 }}
+                          title="Delete"
+                        >
+                          <Trash2 size={15} aria-hidden="true" />
                         </button>
                       </td>
                     </tr>

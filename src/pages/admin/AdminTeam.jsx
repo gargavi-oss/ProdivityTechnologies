@@ -77,29 +77,38 @@ const AdminTeam = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--on-surface)' }}>Team Members ({members.length})</h1>
           <button onClick={() => { setForm(emptyMember); setEditing(null); setShowForm(true); }} className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}>
-            <Plus size={16} /> Add Member
+            <Plus size={16} aria-hidden="true" /> Add Member
           </button>
         </div>
 
         {/* Form Modal */}
         {showForm && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--space-4)' }}>
-            <div className="glass-card" style={{ width: '100%', maxWidth: '540px', padding: 'var(--space-8)', background: 'rgba(255,255,255,0.97)', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="admin-modal-overlay">
+            <div className="admin-modal" style={{ maxWidth: '540px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-6)' }}>
                 <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 600, color: 'var(--on-surface)' }}>{editing ? 'Edit Member' : 'New Member'}</h2>
-                <button onClick={() => { setShowForm(false); setEditing(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--outline)' }}><X size={20} /></button>
+                <button onClick={() => { setShowForm(false); setEditing(null); }} aria-label="Close modal" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--outline)' }}><X size={20} /></button>
               </div>
               <form onSubmit={handleSubmit}>
                 {/* Photo Upload */}
                 <div style={{ marginBottom: 'var(--space-5)', textAlign: 'center' }}>
                   {form.photoUrl ? (
-                    <img src={form.photoUrl} alt="Preview" style={{ width: '90px', height: '90px', borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(98,0,238,0.15)', marginBottom: 'var(--space-3)' }} />
+                    <img src={form.photoUrl} alt="Preview" style={{
+                      width: '90px', height: '90px', borderRadius: '50%', objectFit: 'cover',
+                      border: '3px solid rgba(139, 92, 246, 0.2)', marginBottom: 'var(--space-3)',
+                    }} />
                   ) : (
-                    <div style={{ width: '90px', height: '90px', borderRadius: '50%', background: 'rgba(98,0,238,0.06)', border: '2px dashed rgba(98,0,238,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto var(--space-3)', color: 'var(--primary)' }}>
-                      <Upload size={24} />
+                    <div style={{
+                      width: '90px', height: '90px', borderRadius: '50%',
+                      background: 'rgba(139, 92, 246, 0.08)',
+                      border: '2px dashed rgba(139, 92, 246, 0.25)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      margin: '0 auto var(--space-3)', color: 'var(--primary-bright)',
+                    }}>
+                      <Upload size={24} aria-hidden="true" />
                     </div>
                   )}
-                  <label style={{ cursor: 'pointer', fontSize: '0.8rem', fontWeight: 500, color: 'var(--primary)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <label style={{ cursor: 'pointer', fontSize: '0.8rem', fontWeight: 500, color: 'var(--primary-bright)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
                     <input type="file" accept="image/*" onChange={handlePhotoUpload} style={{ display: 'none' }} />
                     {uploading ? 'Uploading...' : form.photoUrl ? 'Change Photo' : 'Upload Photo (Cloudinary)'}
                   </label>
@@ -146,20 +155,33 @@ const AdminTeam = () => {
             {members.map((m) => (
               <div key={m._id} className="glass-card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
                 {m.photoUrl ? (
-                  <img src={m.photoUrl} alt={m.name} style={{ width: '72px', height: '72px', borderRadius: '50%', objectFit: 'cover', margin: '0 auto var(--space-4)', display: 'block' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                  <img src={m.photoUrl} alt={`${m.name}'s photo`} style={{
+                    width: '72px', height: '72px', borderRadius: '50%', objectFit: 'cover',
+                    margin: '0 auto var(--space-4)', display: 'block',
+                    border: '2px solid rgba(139, 92, 246, 0.2)',
+                  }} loading="lazy" onError={(e) => { e.target.style.display = 'none'; }} />
                 ) : (
-                  <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(98,0,238,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto var(--space-4)', fontWeight: 700, fontSize: '1.3rem', color: 'var(--primary)' }}>
+                  <div style={{
+                    width: '72px', height: '72px', borderRadius: '50%',
+                    background: 'rgba(139, 92, 246, 0.1)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    margin: '0 auto var(--space-4)', fontWeight: 700, fontSize: '1.3rem',
+                    color: 'var(--primary-bright)',
+                  }}>
                     {m.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                   </div>
                 )}
                 <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1rem', color: 'var(--on-surface)', marginBottom: '0.25rem' }}>{m.name}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 'var(--space-3)' }}>{m.role}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--primary-bright)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 'var(--space-3)' }}>{m.role}</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', justifyContent: 'center', marginBottom: 'var(--space-4)' }}>
-                  {m.skills?.map((s) => <span key={s} style={{ fontSize: '0.65rem', padding: '0.15rem 0.5rem', borderRadius: 'var(--radius-full)', background: 'rgba(98,0,238,0.06)', color: 'var(--outline)' }}>{s}</span>)}
+                  {m.skills?.map((s) => <span key={s} style={{
+                    fontSize: '0.65rem', padding: '0.15rem 0.5rem', borderRadius: 'var(--radius-full)',
+                    background: 'rgba(139, 92, 246, 0.08)', color: 'var(--outline)',
+                  }}>{s}</span>)}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--space-3)' }}>
-                  <button onClick={() => startEdit(m)} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer' }}><Edit size={15} /></button>
-                  <button onClick={() => deleteMember(m._id)} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer' }}><Trash2 size={15} /></button>
+                  <button onClick={() => startEdit(m)} aria-label={`Edit ${m.name}`} style={{ background: 'none', border: 'none', color: 'var(--primary-bright)', cursor: 'pointer' }}><Edit size={15} /></button>
+                  <button onClick={() => deleteMember(m._id)} aria-label={`Delete ${m.name}`} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer' }}><Trash2 size={15} /></button>
                 </div>
               </div>
             ))}

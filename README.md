@@ -1,17 +1,123 @@
-# React + Vite
+# 🚀 Prodivity Technologies
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack developer agency platform designed to showcase team expertise, services, and project portfolios while providing a comprehensive admin dashboard for dynamic website management.
 
-Currently, two official plugins are available:
+## 🌐 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Website:** https://prodivity-technologies.vercel.app
 
-## React Compiler
+**Repository:** https://github.com/gargavi-oss/ProdivityTechnologies
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+# 📌 Overview
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# ProdivityTechnologies
+Prodivity Technologies is a MERN-stack developer agency platform built to help development teams establish a professional online presence, showcase technical expertise, and attract freelance or agency-based projects.
+
+The platform features a powerful **Admin Content Management System (CMS)** that allows administrators to manage projects, team members, testimonials, contact information, and website content dynamically without modifying the source code.
+
+---
+
+# ✨ Features
+
+### 👨‍💻 Team Showcase
+
+* Developer profile management
+* Technical skills display
+* Expertise and specialization showcase
+* Professional portfolio presentation
+
+### 💼 Services Management
+
+* Dynamic service listings
+* Technology expertise showcase
+* Agency capability presentation
+* Client-focused solutions
+
+### 📂 Project Portfolio Management
+
+* Add new projects
+* Edit project details
+* Delete projects
+* Update technology stacks
+* Manage project showcases
+* Dynamic portfolio updates
+
+### 👥 Team Member Management
+
+* Add team members
+* Edit developer profiles
+* Update skills and expertise
+* Manage profile information
+* Modify team showcase content
+
+### ⭐ Testimonial Management
+
+* Add client testimonials
+* Edit existing testimonials
+* Remove testimonials
+* Manage customer feedback
+* Update social proof sections
+
+### 📞 Contact Management
+
+* Manage contact information
+* Update business details
+* Edit social media links
+* Maintain communication channels
+* Dynamic contact section updates
+
+### 🔐 Admin Dashboard
+
+* Secure admin login system
+* Protected admin routes
+* Centralized content management
+* Real-time website updates
+* Complete website administration
+* User-friendly management interface
+
+### 🌐 Website Content Management
+
+Administrators can dynamically manage:
+
+* Homepage content
+* About Us section
+* Services section
+* Team information
+* Portfolio projects
+* Testimonials
+* Contact details
+* Agency information
+
+### 📱 Responsive Design
+
+* Mobile-friendly interface
+* Tablet optimization
+* Desktop responsiveness
+* Modern UI/UX implementation
+* Cross-device compatibility
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+* React.js
+* Tailwind CSS
+* JavaScript
+
+## Backend
+
+* Node.js
+* Express.js
+* REST APIs
+
+## Database
+
+* MongoDB
+* Mongoose
+
+## Deployment
+
+* Vercel
